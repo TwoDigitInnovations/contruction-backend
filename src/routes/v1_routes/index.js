@@ -19,7 +19,7 @@ router.post("/sendOTP", user.sendOTPForforgetpass);
 router.post("/verifyOTP", user.verifyOTP);
 router.post("/changePassword", user.changePassword);
 router.post("/shopsnearme", user.shopsnearme);
-// router.get("/getAllUsers", user.getAllUsers);
+
 router.get("/getAllDriver", user.getAllDriver);
 router.get("/getAllVendor", user.getAllVendor);
 router.get("/driverupdatelocation",isAuthenticated(["DRIVER"]), user.driverupdatelocation);

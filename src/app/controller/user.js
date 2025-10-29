@@ -13,49 +13,49 @@ const Verification = mongoose.model("Verification");
 const Device = mongoose.model("Device");
 
 module.exports = {
-//   sendOTPForSignUp: async (req, res) => {
-//     try {
-//       const payload = req.body;
-//       const user = await User.findOne({ phone: payload.phone });
+  //   sendOTPForSignUp: async (req, res) => {
+  //     try {
+  //       const payload = req.body;
+  //       const user = await User.findOne({ phone: payload.phone });
 
-//       if (user) {
-//         return response.badReq(res, { message: "Number allready exist." });
-//       }
-//       const user2 = await User.findOne({ email: payload.email });
+  //       if (user) {
+  //         return response.badReq(res, { message: "Number allready exist." });
+  //       }
+  //       const user2 = await User.findOne({ email: payload.email });
 
-//       if (user2) {
-//         return response.badReq(res, { message: "Email allready exist." });
-//       }
+  //       if (user2) {
+  //         return response.badReq(res, { message: "Email allready exist." });
+  //       }
 
-//       let ran_otp = Math.floor(1000 + Math.random() * 9000);
+  //       let ran_otp = Math.floor(1000 + Math.random() * 9000);
 
-//       const veruser = await Verification.findOne({ phone: payload.email });
+  //       const veruser = await Verification.findOne({ phone: payload.email });
 
-//       if (veruser) {
-//         veruser.expiration_at = userHelper.getDatewithAddedMinutes(5);
-//         veruser.otp = ran_otp;
-//         await veruser.save();
-//       } else {
-//         // let ran_otp = "0000";
-//         let ver = new Verification({
-//           otp: ran_otp,
-//           phone: payload.email,
-//           expiration_at: userHelper.getDatewithAddedMinutes(5),
-//         });
-//         await ver.save();
-//       }
-//       await mailNotification.sendOTPmailForSignup({
-//         email: payload.email,
-//         code: ran_otp,
-//       });
+  //       if (veruser) {
+  //         veruser.expiration_at = userHelper.getDatewithAddedMinutes(5);
+  //         veruser.otp = ran_otp;
+  //         await veruser.save();
+  //       } else {
+  //         // let ran_otp = "0000";
+  //         let ver = new Verification({
+  //           otp: ran_otp,
+  //           phone: payload.email,
+  //           expiration_at: userHelper.getDatewithAddedMinutes(5),
+  //         });
+  //         await ver.save();
+  //       }
+  //       await mailNotification.sendOTPmailForSignup({
+  //         email: payload.email,
+  //         code: ran_otp,
+  //       });
 
-//       return response.ok(res, { message: "OTP sent to your email" });
-//     } catch (error) {
-//       return response.error(res, error);
-//     }
+  //       return response.ok(res, { message: "OTP sent to your email" });
+  //     } catch (error) {
+  //       return response.error(res, error);
+  //     }
   //   },
-  
-signUp: async (req, res) => {
+
+  signUp: async (req, res) => {
     try {
       const payload = req.body;
       const mail = req.body.email;
@@ -78,15 +78,15 @@ signUp: async (req, res) => {
           message: "Email Id already exists.",
         });
       }
-        let userdata = new User(payload);
-        userdata.password = userdata.encryptPassword(req.body.password);
-        await userdata.save();
-        res.status(200).json({ success: true, data: userdata });
+      let userdata = new User(payload);
+      userdata.password = userdata.encryptPassword(req.body.password);
+      await userdata.save();
+      res.status(200).json({ success: true, data: userdata });
     } catch (error) {
       return response.error(res, error);
     }
   },
-  
+
   login: (req, res) => {
     // console.log(req.body);
     passport.authenticate("local", async (err, user, info) => {
@@ -198,25 +198,25 @@ signUp: async (req, res) => {
       return response.error(res, error);
     }
   },
-//   getAllUsers: async (req, res) => {
-//     try {
-//       const user = await User.find();
-//       const data = [];
-//       user.map(async (item) => {
-//         delete item._doc.password;
-//         data.push({ ...item._doc });
-//       });
-//       // delete user.password;
-//       return response.ok(res, data);
-//     } catch (error) {
-//       return response.error(res, error);
-//     }
-//   },
+  //   getAllUsers: async (req, res) => {
+  //     try {
+  //       const user = await User.find();
+  //       const data = [];
+  //       user.map(async (item) => {
+  //         delete item._doc.password;
+  //         data.push({ ...item._doc });
+  //       });
+  //       // delete user.password;
+  //       return response.ok(res, data);
+  //     } catch (error) {
+  //       return response.error(res, error);
+  //     }
+  //   },
 
   getProfile: async (req, res) => {
     // console.log(req.body);
     try {
-      const data = await User.findById(req.user.id,'-password');
+      const data = await User.findById(req.user.id, '-password');
 
       return response.ok(res, data);
     } catch (error) {
@@ -319,14 +319,14 @@ signUp: async (req, res) => {
       const payload = req.body;
       const userId = req?.params?.id || req.user.id;
       const user = await User.findOne({ phone: payload.phone });
-      if (user&&user._id!=userId) {
+      if (user && user._id != userId) {
         return response.badReq(res, { message: "Phone number already exists." });
       }
       // if (req.file && req.file.key) {
       //   payload.img=req.file.location
       // }
       if (payload?.location) {
-        payload.location=JSON.parse(payload?.location)
+        payload.location = JSON.parse(payload?.location)
       }
       if (req.files && req.files?.img?.length > 0) {
         payload.img = req.files?.img?.[0].location;
@@ -343,217 +343,215 @@ signUp: async (req, res) => {
       if (req.files && req.files?.vehicle_doc_img?.length > 0) {
         payload.vehicle_doc_img = req.files?.vehicle_doc_img?.[0].location;
       }
-          const u = await User.findByIdAndUpdate(
-            userId,
-            { $set: payload },
-            {
-              new: true,
-              upsert: true,
-            }
-          );
-          delete u.password;
-          // let token = await new jwtService().createJwtToken({
-          //   id: u._id,
-          //   type: u.type,
-          // });
-          // const data = {
-          //   token,
-          //   ...u._doc,
-          // };
-          // delete data.password;
-          return response.ok(res, u);
+      const u = await User.findByIdAndUpdate(
+        userId,
+        { $set: payload },
+        {
+          new: true,
+          upsert: true,
+        }
+      );
+      delete u.password;
+      // let token = await new jwtService().createJwtToken({
+      //   id: u._id,
+      //   type: u.type,
+      // });
+      // const data = {
+      //   token,
+      //   ...u._doc,
+      // };
+      // delete data.password;
+      return response.ok(res, u);
     } catch (error) {
       return response.error(res, error);
     }
   },
 
-driverupdatelocation: async (req, res) => {
+  driverupdatelocation: async (req, res) => {
     try {
       const track = req.body?.track;
       if (!track) {
-    return response.error(res, "Location not provided");
-  }
-      await User.findByIdAndUpdate(req.user.id,{ $set: { current_location: track } });
-      return response.ok(res, {message:"Location Update successfully"});
+        return response.error(res, "Location not provided");
+      }
+      await User.findByIdAndUpdate(req.user.id, { $set: { current_location: track } });
+      return response.ok(res, { message: "Location Update successfully" });
     } catch (error) {
       return response.error(res, error);
     }
   },
 
   updateBasicProfile: async (req, res) => {
-  const { username, email, phone } = req.body;
-  const userId = req?.params?.id || req.user.id;
-  
-  try {
-    
-    let updateData = {};
-    
-    if (username && username.trim() !== '') {
-      updateData.username = username.trim();
+    const { username, email, phone } = req.body;
+    const userId = req?.params?.id || req.user.id;
+
+    try {
+
+      let updateData = {};
+
+      if (username && username.trim() !== '') {
+        updateData.username = username.trim();
+      }
+
+      if (email && email.trim() !== '') {
+        updateData.email = email.toLowerCase().trim();
+      }
+
+      if (phone && phone.trim() !== '') {
+        updateData.phone = phone.trim();
+      }
+
+      console.log('Updating user with data:', updateData);
+
+      // Update user
+      const updatedUser = await User.findByIdAndUpdate(
+        userId,
+        { $set: updateData },
+        { new: true }
+      );
+
+      if (!updatedUser) {
+        return response.error(res, { message: "User not found" });
+      }
+
+      // Generate new token
+      let token = await new jwtService().createJwtToken({
+        id: updatedUser._id,
+        type: updatedUser.type,
+      });
+
+      const responseData = {
+        token,
+        ...updatedUser._doc,
+      };
+      delete responseData.password;
+
+      return response.ok(res, {
+        message: "Profile updated successfully",
+        data: responseData
+      });
+
+    } catch (error) {
+      console.log('Update profile error:', error);
+      return response.error(res, error);
     }
-    
-    if (email && email.trim() !== '') {
-      updateData.email = email.toLowerCase().trim();
-    }
-    
-    if (phone && phone.trim() !== '') {
-      updateData.phone = phone.trim();
-    }
-    
-    console.log('Updating user with data:', updateData);
-    
-    // Update user
-    const updatedUser = await User.findByIdAndUpdate(
-      userId,
-      { $set: updateData },
-      { new: true }
-    );
-    
-    if (!updatedUser) {
-      return response.error(res, { message: "User not found" });
-    }
-    
-    // Generate new token
-    let token = await new jwtService().createJwtToken({
-      id: updatedUser._id,
-      type: updatedUser.type,
-    });
-    
-    const responseData = {
-      token,
-      ...updatedUser._doc,
-    };
-    delete responseData.password;
-    
-    return response.ok(res, {
-      message: "Profile updated successfully",
-      data: responseData
-    });
-    
-  } catch (error) {
-    console.log('Update profile error:', error);
-    return response.error(res, error);
-  }
-},
+  },
   getAllDriver: async (req, res) => {
     try {
-        const page = parseInt(req.query.page) || 1;
-        const limit = parseInt(req.query.limit) || 10;
-        const search = req.query.search || '';
-        const date = req.query.date || '';
-        const status = req.query.status || '';
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const search = req.query.search || '';
+      const date = req.query.date || '';
+      const status = req.query.status || '';
 
-        const skip = (page - 1) * limit;
+      const skip = (page - 1) * limit;
+      let query = { type: "DRIVER" };
 
-       
-        let query = { type: "DRIVER" };
 
-      
-        if (search) {
-            query.$or = [
-                { username: { $regex: search, $options: 'i' } },
-                { email: { $regex: search, $options: 'i' } }
-            ];
-        }
+      if (search) {
+        query.$or = [
+          { username: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } }
+        ];
+      }
 
-        // Date filter
-        if (date) {
-            const startDate = new Date(date);
-            const endDate = new Date(date);
-            endDate.setDate(endDate.getDate() + 1);
-            
-            query.createdAt = {
-                $gte: startDate,
-                $lt: endDate
-            };
-        }
+      // Date filter
+      if (date) {
+        const startDate = new Date(date);
+        const endDate = new Date(date);
+        endDate.setDate(endDate.getDate() + 1);
 
-        // Status filter
-        if (status) {
-            query.verified = status;
-        }
+        query.createdAt = {
+          $gte: startDate,
+          $lt: endDate
+        };
+      }
 
-        const data = await User.find(query, "-password")
-            .skip(skip)
-            .limit(limit)
-            .sort({ createdAt: -1 });
-            
-        const totalCount = await User.countDocuments(query);
+      // Status filter
+      if (status) {
+        query.verified = status;
+      }
 
-        return response.ok(res, {
-            data,
-            currentPage: page,
-            totalPages: Math.ceil(totalCount / limit),
-            totalItems: totalCount
-        });
+      const data = await User.find(query, "-password")
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 });
+
+      const totalCount = await User.countDocuments(query);
+
+      return response.ok(res, {
+        data,
+        currentPage: page,
+        totalPages: Math.ceil(totalCount / limit),
+        totalItems: totalCount
+      });
     } catch (error) {
-        return response.error(res, error);
+      return response.error(res, error);
     }
-},
+  },
   getAllVendor: async (req, res) => {
-  try {
-    const { page = 1, limit = 10, search = '', dateFilter = '' } = req.query;
-    
-    // Build query object
-    let query = { type: "VENDOR" };
-    
-    // Add search functionality
-    if (search) {
-      query.$or = [
-        { username: { $regex: search, $options: 'i' } },
-        { email: { $regex: search, $options: 'i' } },
-        { shop_name: { $regex: search, $options: 'i' } }
-      ];
-    }
-    
-    // Add date filter
-    if (dateFilter) {
-      const startDate = new Date(dateFilter);
-      const endDate = new Date(dateFilter);
-      endDate.setDate(endDate.getDate() + 1);
-      
-      query.createdAt = {
-        $gte: startDate,
-        $lt: endDate
-      };
-    }
-    
-  
-    if (search) {
-      const users = await User.find(query, "-password").sort({ createdAt: -1 });
+    try {
+      const { page, limit, search, date, status } = req.query;
+
+
+      let query = { type: "VENDOR" };
+
+      // Add search functionality
+      if (search) {
+        query.$or = [
+          { username: { $regex: search, $options: 'i' } },
+          { email: { $regex: search, $options: 'i' } },
+          { shop_name: { $regex: search, $options: 'i' } }
+        ];
+      }
+
+      // Add date filter
+      if (date) {
+        const startDate = new Date(date);
+        const endDate = new Date(date);
+        endDate.setDate(endDate.getDate() + 1);
+
+        query.createdAt = {
+          $gte: startDate,
+          $lt: endDate
+        };
+      }
+
+      // Status filter
+      if (status) {
+        query.verified = status;
+      }
+
+      if (search) {
+        const users = await User.find(query, "-password").sort({ createdAt: -1 });
+        return response.ok(res, {
+          data: users,
+          totalCount: users.length,
+          currentPage: 1,
+          totalPages: 1,
+        });
+      }
+
+
+      const skip = (page - 1) * limit;
+      const users = await User.find(query, "-password")
+        .sort({ createdAt: -1 })
+        .skip(skip)
+        .limit(parseInt(limit));
+
+      const totalCount = await User.countDocuments(query);
+      const totalPages = Math.ceil(totalCount / limit);
+
       return response.ok(res, {
         data: users,
-        totalCount: users.length,
-        currentPage: 1,
-        totalPages: 1,
-        hasNextPage: false,
-        hasPrevPage: false
+        totalCount,
+        currentPage: parseInt(page),
+        totalPages,
       });
+
+    } catch (error) {
+      return response.error(res, error);
     }
-    
-    
-    const skip = (page - 1) * limit;
-    const users = await User.find(query, "-password")
-      .sort({ createdAt: -1 })
-      .skip(skip)
-      .limit(parseInt(limit));
-    
-    const totalCount = await User.countDocuments(query);
-    const totalPages = Math.ceil(totalCount / limit);
-    
-    return response.ok(res, {
-      data: users,
-      totalCount,
-      currentPage: parseInt(page),
-      totalPages,
-      hasNextPage: page < totalPages,
-      hasPrevPage: page > 1
-    });
-    
-  } catch (error) {
-    return response.error(res, error);
-  }
-},
+  },
 
   verifyuser: async (req, res) => {
     try {
@@ -561,6 +559,7 @@ driverupdatelocation: async (req, res) => {
       user.verified = req?.body?.verified;
       await user.save();
       console.log("==>", user._id);
+
       // if (req.body.verified === "VERIFIED") {
       //   await notify(
       //     user._id,
@@ -575,189 +574,186 @@ driverupdatelocation: async (req, res) => {
       //     "Your account is suspended"
       //   );
       // }
+
       return response.ok(res, user);
     } catch (error) {
       return response.error(res, error);
     }
   },
 
-//   fileUpload: async (req, res) => {
-//     try {
-//       let key = req.file && req.file.key;
-//       return response.ok(res, {
-//         message: "File uploaded.",
-//         file: `${process.env.ASSET_ROOT}/${key}`,
-//       });
-//     } catch (error) {
-//       return response.error(res, error);
-//     }
-//   },
-shopsnearme: async (req, res) => {
-  try {
-    // const products = await Product.find({ category: req.body.categoryId }).select('posted_by');
-// console.log(products)
+  //   fileUpload: async (req, res) => {
+  //     try {
+  //       let key = req.file && req.file.key;
+  //       return response.ok(res, {
+  //         message: "File uploaded.",
+  //         file: `${process.env.ASSET_ROOT}/${key}`,
+  //       });
+  //     } catch (error) {
+  //       return response.error(res, error);
+  //     }
+  //   },
+  shopsnearme: async (req, res) => {
+    try {
+      // const products = await Product.find({ category: req.body.categoryId }).select('posted_by');
+      // console.log(products)
 
-// Extract vendor IDs
-// const vendorIds = [...new Set(products.map((product) => product.posted_by.toString()))];
-const vendorIds = await Product.distinct('posted_by', { category: req.body.categoryId });
-console.log(vendorIds)
+      // Extract vendor IDs
+      // const vendorIds = [...new Set(products.map((product) => product.posted_by.toString()))];
+      const vendorIds = await Product.distinct('posted_by', { category: req.body.categoryId });
+      console.log(vendorIds)
 
-    let rides = await User.find({
-      _id: { $in: vendorIds },
-      type:'VENDOR',
-      location: {
-        $near: {
-          $maxDistance: 1609.34 * 10,
-          $geometry: {
-            type: "Point",
-            coordinates: req.body.location,
+      let rides = await User.find({
+        _id: { $in: vendorIds },
+        type: 'VENDOR',
+        location: {
+          $near: {
+            $maxDistance: 1609.34 * 10,
+            $geometry: {
+              type: "Point",
+              coordinates: req.body.location,
+            },
           },
         },
-      },
-    },'-password');
-    // console.log(req.body)
-    // console.log(rides)
-    return response.ok(res,rides);
-  } catch (err) {
-    return response.error(res, err);
-    }
-  },
+      }, '-password');
+      // console.log(req.body)
+      // console.log(rides)
+      return response.ok(res, rides);
+    } catch (err) {
+      return response.error(res, err);
+    }
+  },
 
-getAllUsers: async (req, res) => {
-  try {
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 10;
-    const skip = (page - 1) * limit;
-    
-    // Extract query parameters
-    const { search, date, userType, status } = req.query;
-    
-    // Build filter object
-    let filter = {};
-    
-    // Search functionality (name or email)
-    if (search && search.trim()) {
-      filter.$or = [
-        { username: { $regex: search.trim(), $options: 'i' } },
-        { email: { $regex: search.trim(), $options: 'i' } }
-      ];
-    }
-    
-    // Date filter (created on specific date)
-    if (date) {
-      const startOfDay = new Date(date);
-      const endOfDay = new Date(date);
-      endOfDay.setHours(23, 59, 59, 999);
-      
-      filter.createdAt = {
-        $gte: startOfDay,
-        $lte: endOfDay
-      };
-    }
-    
-   
-    if (userType && ['USER', 'VENDOR', 'DRIVER'].includes(userType)) {
-      filter.type = userType;
-    }
-    
-    
-    if (status && ['VERIFIED', 'PENDING', 'SUSPEND'].includes(status)) {
-      filter.verified = status;
-    }
-    
-    
-    let users, total;
-    
-    if (search || date) {
-     
-      users = await User.find(filter, "-password")
-        .sort({ createdAt: -1 });
-      total = users.length;
-    } else {
-     
-      users = await User.find(filter, "-password")
-        .sort({ createdAt: -1 })
-        .skip(skip)
-        .limit(limit);
-      total = await User.countDocuments(filter);
-    }
+  getAllUsers: async (req, res) => {
+    try {
+      const page = parseInt(req.query.page) || 1;
+      const limit = parseInt(req.query.limit) || 10;
+      const skip = (page - 1) * limit;
 
-    return response.ok(res, {
-      users,
-      pagination: {
-        total,
-        page: search || date ? 1 : page,
-        limit: search || date ? total : limit,
-        pages: search || date ? 1 : Math.ceil(total / limit),
-      },
-    });
-  } catch (error) {
-    return response.error(res, error);
+      const { search, date, userType, status } = req.query;
+
+      let filter = {};
+
+      if (search && search.trim()) {
+        filter.$or = [
+          { username: { $regex: search.trim(), $options: 'i' } },
+          { email: { $regex: search.trim(), $options: 'i' } }
+        ];
+      }
+
+      if (date) {
+        const startOfDay = new Date(date);
+        const endOfDay = new Date(date);
+        endOfDay.setHours(23, 59, 59, 999);
+
+        filter.createdAt = {
+          $gte: startOfDay,
+          $lte: endOfDay
+        };
+      }
+
+
+      if (userType && ['USER', 'VENDOR', 'DRIVER'].includes(userType)) {
+        filter.type = userType;
+      }
+
+
+      if (status && ['VERIFIED', 'PENDING', 'SUSPEND'].includes(status)) {
+        filter.verified = status;
+      }
+
+
+      let users, total;
+
+      if (search || date) {
+
+        users = await User.find(filter, "-password")
+          .sort({ createdAt: -1 });
+        total = users.length;
+      } else {
+
+        users = await User.find(filter, "-password")
+          .sort({ createdAt: -1 })
+          .skip(skip)
+          .limit(limit);
+        total = await User.countDocuments(filter);
+      }
+
+      return response.ok(res, {
+        users,
+        pagination: {
+          total,
+          page: search || date ? 1 : page,
+          limit: search || date ? total : limit,
+          pages: search || date ? 1 : Math.ceil(total / limit),
+        },
+      });
+    } catch (error) {
+      return response.error(res, error);
+    }
+  },
+  updatePassword: async (req, res) => {
+    try {
+      const { oldPassword, newPassword, confirmNewPassword } = req.body;
+      const userId = req.user.id; // Assuming you have user ID from JWT middleware
+
+      // Validate input
+      if (!oldPassword || !newPassword || !confirmNewPassword) {
+        return response.badReq(res, {
+          message: "Old password, new password and confirm password are required."
+        });
+      }
+
+      // Check if new password matches confirm password
+      if (newPassword !== confirmNewPassword) {
+        return response.badReq(res, {
+          message: "New password and confirm password do not match."
+        });
+      }
+
+      // Validate new password length (optional)
+      if (newPassword.length < 6) {
+        return response.badReq(res, {
+          message: "New password must be at least 6 characters long."
+        });
+      }
+
+      // Find the user
+      const user = await User.findById(userId);
+      if (!user) {
+        return response.notFound(res, {
+          message: "User not found."
+        });
+      }
+
+      // Verify old password
+      const isOldPasswordValid = user.isValidPassword(oldPassword);
+      if (!isOldPasswordValid) {
+        return response.badReq(res, {
+          message: "Old password is incorrect."
+        });
+      }
+
+      // Check if new password is same as old password
+      if (oldPassword === newPassword) {
+        return response.badReq(res, {
+          message: "New password must be different from old password."
+        });
+      }
+
+      // Encrypt new password and update
+      user.password = user.encryptPassword(newPassword);
+      await user.save();
+
+      // Optional: Send email notification
+      // await mailNotification.passwordChange({ email: user.email });
+
+      return response.ok(res, {
+        message: "Password updated successfully."
+      });
+
+    } catch (error) {
+      return response.error(res, error);
+    }
   }
-},
-updatePassword: async (req, res) => {
-  try {
-    const { oldPassword, newPassword, confirmNewPassword } = req.body;
-    const userId = req.user.id; // Assuming you have user ID from JWT middleware
-
-    // Validate input
-    if (!oldPassword || !newPassword || !confirmNewPassword) {
-      return response.badReq(res, { 
-        message: "Old password, new password and confirm password are required." 
-      });
-    }
-
-    // Check if new password matches confirm password
-    if (newPassword !== confirmNewPassword) {
-      return response.badReq(res, { 
-        message: "New password and confirm password do not match." 
-      });
-    }
-
-    // Validate new password length (optional)
-    if (newPassword.length < 6) {
-      return response.badReq(res, { 
-        message: "New password must be at least 6 characters long." 
-      });
-    }
-
-    // Find the user
-    const user = await User.findById(userId);
-    if (!user) {
-      return response.notFound(res, { 
-        message: "User not found." 
-      });
-    }
-
-    // Verify old password
-    const isOldPasswordValid = user.isValidPassword(oldPassword);
-    if (!isOldPasswordValid) {
-      return response.badReq(res, { 
-        message: "Old password is incorrect." 
-      });
-    }
-
-    // Check if new password is same as old password
-    if (oldPassword === newPassword) {
-      return response.badReq(res, { 
-        message: "New password must be different from old password." 
-      });
-    }
-
-    // Encrypt new password and update
-    user.password = user.encryptPassword(newPassword);
-    await user.save();
-
-    // Optional: Send email notification
-    // await mailNotification.passwordChange({ email: user.email });
-
-    return response.ok(res, { 
-      message: "Password updated successfully." 
-    });
-
-  } catch (error) {
-    return response.error(res, error);
-  }
-}
 
 };
