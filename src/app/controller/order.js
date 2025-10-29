@@ -93,6 +93,19 @@ module.exports = {
       return response.error(res, error);
     }
   },
+  getordercount: async (req, res) => {
+    try {
+      const [totalOrderCount, totalDeliveredOrder, totalPendingOrder] = await Promise.all([
+    Order.countDocuments({user:req.user.id}),
+    Order.countDocuments({ user:req.user.id,status: "Delivered" }),
+    Order.countDocuments({ user:req.user.id,status: "Pending" }),
+  ]);
+
+      return response.ok(res, {totalOrderCount,totalDeliveredOrder,totalPendingOrder});
+    } catch (error) {
+      return response.error(res, error);
+    }
+  },
   getorderfilter: async (req, res) => {
     try {
       let cond ={}

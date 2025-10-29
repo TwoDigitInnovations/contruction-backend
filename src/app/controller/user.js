@@ -325,6 +325,9 @@ signUp: async (req, res) => {
       // if (req.file && req.file.key) {
       //   payload.img=req.file.location
       // }
+      if (payload?.location) {
+        payload.location=JSON.parse(payload?.location)
+      }
       if (req.files && req.files?.img?.length > 0) {
         payload.img = req.files?.img?.[0].location;
       }
@@ -614,7 +617,7 @@ console.log(vendorIds)
     },'-password');
     // console.log(req.body)
     // console.log(rides)
-    return response.ok(res,{rides});
+    return response.ok(res,rides);
   } catch (err) {
     return response.error(res, err);
     }

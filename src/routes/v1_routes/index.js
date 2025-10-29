@@ -122,6 +122,7 @@ router.get("/acceptedorderfordriver",isAuthenticated(["USER", "ADMIN","DRIVER","
 router.post("/acceptorderdriver/:id",isAuthenticated(["USER", "ADMIN","DRIVER","VENDOR"]), order.acceptorderdriver);
 router.get("/orderhistoryfordriver",isAuthenticated(["USER", "ADMIN","DRIVER","VENDOR"]), order.orderhistoryfordriver);
 router.get("/orderhistoryforvendor",isAuthenticated(["USER", "ADMIN","DRIVER","VENDOR"]), order.orderhistoryforvendor);
+router.get("/getordercount",isAuthenticated(["USER", "ADMIN","DRIVER","VENDOR"]), order.getordercount);
 
 
 
