@@ -69,7 +69,7 @@ router.post( "/deleteAllCategory", isAuthenticated(["USER", "ADMIN"]), category.
 ////product/////
 
 router.get("/getProductByVendor",isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),product.getProductByVendor);
-router.post("/createProduct",isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),product.createProduct);
+router.post("/createProduct",isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),upload.any(),product.createProduct);
 router.get(
     "/getProductByCategory/:id",
     // isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),
@@ -78,7 +78,7 @@ router.post("/getProductByVendorandCategory",product.getProductByVendorandCatego
 router.get("/getProductById/:id",product.getProductById);
 
 router.get("/getProducts",product.getProduct);
-router.post("/updateProduct",product.updateProduct);
+router.post("/updateProduct",upload.any(),product.updateProduct);
 router.delete("/deleteProduct/:id",product.deleteProduct);
 
 router.post('/updatepassword',isAuthenticated("USER"),user.updatePassword)

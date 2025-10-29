@@ -28,6 +28,12 @@ const productSchema = new mongoose.Schema(
         value: {
           type: String,
         },
+        image: {
+          type: String,
+        },
+        unit: {
+          type: String,
+        },
       },
     ],
   },

@@ -11,6 +11,76 @@ module.exports = {
         try {
             const payload = req?.body || {};
             payload.posted_by = req.user.id;
+
+            let attributes = [];
+// STEP 1: Parse payload.attributes if sent as JSON or array
+if (payload.attributes) {
+  try {
+    const parsed =
+      typeof payload.attributes === 'string'
+        ? JSON.parse(payload.attributes)
+        : payload.attributes;
+
+    if (Array.isArray(parsed)) {
+      attributes = parsed.map(attr =>
+        typeof attr === 'object' ? { ...attr } : {}
+      );
+    }
+  } catch (err) {
+    console.warn('Could not parse payload.attributes JSON, fallback to form fields', err);
+    attributes = [];
+  }
+}
+
+// STEP 2: Parse FormData-style bracketed keys (attributes[0][name])
+Object.keys(req.body || {}).forEach(key => {
+  const match = key.match(/^attributes\[(\d+)\]\[(.+)\]$/);
+  if (match) {
+    const index = parseInt(match[1], 10);
+    const field = match[2];
+    if (!attributes[index]) attributes[index] = {};
+    attributes[index][field] = req.body[key];
+  }
+});
+
+// STEP 3: Merge uploaded files (from multer / s3)
+if (req.files && req.files.length > 0) {
+  req.files.forEach(file => {
+    const match = (file.fieldname || '').match(/^attributes\[(\d+)\]\[(.+)\]$/);
+    const fileUrl = file.location || file.path || (file.filename ? `/uploads/${file.filename}` : null);
+
+    if (match) {
+      const index = parseInt(match[1], 10);
+      const field = match[2];
+      if (!attributes[index]) attributes[index] = {};
+      attributes[index][field] = fileUrl;
+    } else {
+      payload[file.fieldname] = fileUrl;
+    }
+  });
+}
+
+// STEP 4: Clean invalid or empty values
+attributes.forEach(attr => {
+  Object.keys(attr).forEach(key => {
+    if (
+      attr[key] === 'undefined' ||
+      attr[key] === undefined ||
+      attr[key] === null ||
+      attr[key] === ''
+    ) {
+      delete attr[key];
+    } else if (typeof attr[key] === 'string') {
+      attr[key] = attr[key].trim();
+    }
+  });
+});
+
+// STEP 5: Filter out empty attributes
+payload.attributes = attributes
+  .filter(Boolean) // removes holes or undefined
+  .filter(a => Object.keys(a).length > 0); // removes empty objects
+
             let cat = new Product(payload);
             await cat.save();
             return response.ok(res, { message: 'Product added successfully' });
@@ -64,8 +134,79 @@ module.exports = {
     },
 
     updateProduct: async (req, res) => {
+        const payload = req?.body || {};
+let attributes = [];
+
+// STEP 1: Parse payload.attributes if sent as JSON or array
+if (payload.attributes) {
+  try {
+    const parsed =
+      typeof payload.attributes === 'string'
+        ? JSON.parse(payload.attributes)
+        : payload.attributes;
+
+    if (Array.isArray(parsed)) {
+      attributes = parsed.map(attr =>
+        typeof attr === 'object' ? { ...attr } : {}
+      );
+    }
+  } catch (err) {
+    console.warn('Could not parse payload.attributes JSON, fallback to form fields', err);
+    attributes = [];
+  }
+}
+
+// STEP 2: Parse FormData-style bracketed keys (attributes[0][name])
+Object.keys(req.body || {}).forEach(key => {
+  const match = key.match(/^attributes\[(\d+)\]\[(.+)\]$/);
+  if (match) {
+    const index = parseInt(match[1], 10);
+    const field = match[2];
+    if (!attributes[index]) attributes[index] = {};
+    attributes[index][field] = req.body[key];
+  }
+});
+
+// STEP 3: Merge uploaded files (from multer / s3)
+if (req.files && req.files.length > 0) {
+  req.files.forEach(file => {
+    const match = (file.fieldname || '').match(/^attributes\[(\d+)\]\[(.+)\]$/);
+    const fileUrl = file.location || file.path || (file.filename ? `/uploads/${file.filename}` : null);
+
+    if (match) {
+      const index = parseInt(match[1], 10);
+      const field = match[2];
+      if (!attributes[index]) attributes[index] = {};
+      attributes[index][field] = fileUrl;
+    } else {
+      payload[file.fieldname] = fileUrl;
+    }
+  });
+}
+
+// STEP 4: Clean invalid or empty values
+attributes.forEach(attr => {
+  Object.keys(attr).forEach(key => {
+    if (
+      attr[key] === 'undefined' ||
+      attr[key] === undefined ||
+      attr[key] === null ||
+      attr[key] === ''
+    ) {
+      delete attr[key];
+    } else if (typeof attr[key] === 'string') {
+      attr[key] = attr[key].trim();
+    }
+  });
+});
+
+// STEP 5: Filter out empty attributes
+payload.attributes = attributes
+  .filter(Boolean) // removes holes or undefined
+  .filter(a => Object.keys(a).length > 0); // removes empty objects
+
         try {
-            const payload = req?.body || {};
+
             let updatProduct = await Product.findByIdAndUpdate(payload?.id, payload, {
                 new: true,
                 upsert: true,
