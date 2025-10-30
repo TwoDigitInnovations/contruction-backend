@@ -88,14 +88,16 @@ module.exports = {
   },
 
   login: (req, res) => {
-    // console.log(req.body);
+    console.log(req.body);
     passport.authenticate("local", async (err, user, info) => {
       if (err) {
         return response.error(res, err);
       }
+
       if (!user) {
         return response.unAuthorize(res, info);
       }
+      
       console.log("user=======>>", user);
       let token = await new jwtService().createJwtToken({
         id: user._id,
