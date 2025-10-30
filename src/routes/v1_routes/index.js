@@ -69,13 +69,10 @@ router.post("/deleteAllCategory", isAuthenticated(["USER", "ADMIN"]), category.d
 
 ////product/////
 
-<<<<<<< HEAD
 router.get("/getProductByVendor", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), product.getProductByVendor);
 router.post("/createProduct", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), product.createProduct);
-=======
 router.get("/getProductByVendor",isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),product.getProductByVendor);
 router.post("/createProduct",isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),upload.any(),product.createProduct);
->>>>>>> 51a79168b71b7a6056c0474f6341e016d33cc7e1
 router.get(
   "/getProductByCategory/:id",
   // isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),
@@ -83,15 +80,12 @@ router.get(
 router.post("/getProductByVendorandCategory", product.getProductByVendorandCategory);
 router.get("/getProductById/:id", product.getProductById);
 
-<<<<<<< HEAD
 router.get("/getProducts", product.getProduct);
 router.post("/updateProduct", product.updateProduct);
 router.delete("/deleteProduct/:id", product.deleteProduct);
-=======
 router.get("/getProducts",product.getProduct);
 router.post("/updateProduct",upload.any(),product.updateProduct);
 router.delete("/deleteProduct/:id",product.deleteProduct);
->>>>>>> 51a79168b71b7a6056c0474f6341e016d33cc7e1
 
 router.post('/updatepassword', isAuthenticated("USER"), user.updatePassword)
 
