@@ -107,20 +107,8 @@ const userSchema = new mongoose.Schema(
   address: {
     type: String,
   },
-  pincode: {
-    type: String,
-  },
-  // number: {
-  //   type: String,
-  // },
-  city: {
-    type: String,
-  },
-  state: {
-    type: String,
-  },
-  country: {
-    type: String,
+  shipping_address: {
+    type: Object,
   },
 
   },
