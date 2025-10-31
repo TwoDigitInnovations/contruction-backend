@@ -34,9 +34,6 @@ const productSchema = new mongoose.Schema(
         unit: {
           type: String,
         },
-        price: {
-          type: String,
-        }
       },
     ],
   },
