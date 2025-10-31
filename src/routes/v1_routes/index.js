@@ -70,9 +70,17 @@ router.post("/deleteAllCategory", isAuthenticated(["USER", "ADMIN"]), category.d
 ////product/////
 
 router.get("/getProductByVendor", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), product.getProductByVendor);
-router.post("/createProduct", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), product.createProduct);
+// router.post("/createProduct", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), product.createProduct);
 router.get("/getProductByVendor",isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),product.getProductByVendor);
-router.post("/createProduct",isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),upload.any(),product.createProduct);
+
+router.post(
+  "/createProduct",
+  upload.any(),  // ✅ parse form-data first
+  isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),
+  product.createProduct
+);
+
+
 router.get(
   "/getProductByCategory/:id",
   // isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),
@@ -80,9 +88,6 @@ router.get(
 router.post("/getProductByVendorandCategory", product.getProductByVendorandCategory);
 router.get("/getProductById/:id", product.getProductById);
 
-router.get("/getProducts", product.getProduct);
-router.post("/updateProduct", product.updateProduct);
-router.delete("/deleteProduct/:id", product.deleteProduct);
 router.get("/getProducts",product.getProduct);
 router.post("/updateProduct",upload.any(),product.updateProduct);
 router.delete("/deleteProduct/:id",product.deleteProduct);
