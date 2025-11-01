@@ -107,7 +107,10 @@ const userSchema = new mongoose.Schema(
     address: {
       type: String,
     },
-    shipping_address: {
+    country: {
+    type: String,
+  },
+  shipping_address: {
       type: Object,
     },
     city: {
