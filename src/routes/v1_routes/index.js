@@ -20,6 +20,7 @@ router.post("/sendOTP", user.sendOTPForforgetpass);
 router.post("/verifyOTP", user.verifyOTP);
 router.post("/changePassword", user.changePassword);
 router.post("/shopsnearme", user.shopsnearme);
+router.post("/getVendorsByCategoryAndAttribute", user.getVendorsByCategoryAndAttribute);
 
 router.get("/getAllDriver", user.getAllDriver);
 router.get("/getAllVendor", user.getAllVendor);
@@ -136,7 +137,7 @@ router.get("/orderhistoryforvendor", isAuthenticated(["USER", "ADMIN", "DRIVER",
 router.get("/getordercount", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), order.getordercount);
 
 
-router.get("/getSetting", isAuthenticated(["ADMIN"]), Setting.getSetting);
+router.get("/getSetting", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), Setting.getSetting);
 router.post("/saveSetting", isAuthenticated(["ADMIN"]), Setting.saveSetting);
 
 module.exports = router;

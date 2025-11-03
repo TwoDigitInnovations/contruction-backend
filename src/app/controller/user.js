@@ -321,9 +321,9 @@ module.exports = {
       const payload = req.body;
       const userId = req?.params?.id || req.user.id;
       const user = await User.findOne({ phone: payload.phone });
-      if (user && user._id != userId) {
-        return response.badReq(res, { message: "Phone number already exists." });
-      }
+      // if (user && user._id != userId) {
+      //   return response.badReq(res, { message: "Phone number already exists." });
+      // }
       // if (req.file && req.file.key) {
       //   payload.img=req.file.location
       // }
@@ -624,6 +624,60 @@ module.exports = {
       return response.error(res, err);
     }
   },
+   getVendorsByCategoryAndAttribute : async (req, res) => {
+  try {
+    const { categoryId, attributeName, location } = req.body;
+
+    const result = await User.aggregate([
+  {
+    $geoNear: {
+      near: { type: "Point", coordinates: location },
+      distanceField: "distance",
+      spherical: true,
+      maxDistance: 1609.34 * 10,
+      query: { type: "VENDOR" },
+    },
+  },
+  {
+    $lookup: {
+      from: "products",
+      let: { vendorId: "$_id" },
+      pipeline: [
+        {
+          $match: {
+            $expr: { $eq: ["$posted_by", "$$vendorId"] },
+            category: new mongoose.Types.ObjectId(categoryId),
+            attributes: { $elemMatch: { name: attributeName } },
+          },
+        },
+      ],
+      as: "products",
+    },
+  },
+  {
+    $match: {
+      products: { $ne: [] },
+    },
+  },
+  {
+    $project: {
+      _id: 1,
+      shop_name: 1,
+      address:1,
+      type: 1,
+      location: 1,
+      distance: 1,
+      products: 1,
+    },
+  },
+]);
+    console.log("result",result)
+    return response.ok(res, result);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ success: false, message: err.message });
+  }
+},
 
   getAllUsers: async (req, res) => {
     try {
