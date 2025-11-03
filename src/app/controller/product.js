@@ -77,7 +77,7 @@ module.exports = {
         });
       });
 
-      
+
       payload.attributes = attributes
         .filter(Boolean)
         .filter(a => Object.keys(a).length > 0);
@@ -129,14 +129,35 @@ module.exports = {
       return response.error(res, error);
     }
   },
+
   getProductByVendor: async (req, res) => {
     try {
-      let product = await Product.find({ posted_by: req.user.id });
-      return response.ok(res, product);
+      let { page = 1, limit = 10 } = req.query;
+
+      page = parseInt(page);
+      limit = parseInt(limit);
+      const skip = (page - 1) * limit;
+
+      const total = await Product.countDocuments({ posted_by: req.user.id });
+
+      const product = await Product.find({ posted_by: req.user.id })
+        .skip(skip)
+        .limit(limit)
+        .sort({ createdAt: -1 });
+
+      return response.ok(res, {
+        total,
+        page,
+        limit,
+        totalPages: Math.ceil(total / limit),
+        product,
+      });
     } catch (error) {
       return response.error(res, error);
     }
   },
+
+
   getProductByVendorandCategory: async (req, res) => {
     try {
       let product = await Product.find({ posted_by: req.body.posted_by, category: req.body.category });

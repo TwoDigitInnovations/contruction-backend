@@ -23,48 +23,48 @@ const userSchema = new mongoose.Schema(
       type: String,
       unique: true,
       sparse: true
-  },
+    },
     password: {
       type: String,
     },
-    img:{
-      type:String
+    img: {
+      type: String
     },
-    docimg:{
-      type:String
+    docimg: {
+      type: String
     },
-    shop_name:{
-      type:String
+    shop_name: {
+      type: String
     },
-    shop_address:{
-      type:String
+    shop_address: {
+      type: String
     },
-    business_license:{
-      type:String
+    business_license: {
+      type: String
     },
-    business_license_img:{
-      type:String
+    business_license_img: {
+      type: String
     },
-    business_license_no:{
-      type:String
+    business_license_no: {
+      type: String
     },
-    tax_reg_img:{
-      type:String
+    tax_reg_img: {
+      type: String
     },
-    tax_reg_no:{
-      type:String
+    tax_reg_no: {
+      type: String
     },
-    driving_licence_img:{
-      type:String
+    driving_licence_img: {
+      type: String
     },
-    driving_licence_no:{
-      type:String
+    driving_licence_no: {
+      type: String
     },
-    vehicle_doc_img:{
-      type:String
+    vehicle_doc_img: {
+      type: String
     },
-    vehicle_doc_no:{
-      type:String
+    vehicle_doc_no: {
+      type: String
     },
     email: {
       type: String,
@@ -72,48 +72,56 @@ const userSchema = new mongoose.Schema(
     },
     type: {
       type: String,
-      enum: ["USER", "ADMIN","DRIVER","VENDOR"],
+      enum: ["USER", "ADMIN", "DRIVER", "VENDOR"],
       default: "USER",
     },
     verified: {
       type: String,
-      enum: ["PENDING", "VERIFIED","SUSPEND"],
+      enum: ["PENDING", "VERIFIED", "SUSPEND"],
       default: "PENDING",
-  },
-  vehiclenumber: {
-    type: String,
-  },
-  registration: {
-    type: String,
-  },
-  vehicleimg:{
-      type:String
-  },
-  nationalid:{
-      type:String
-  },
-  nationalidfront:{
-      type:String
-  },
-  nationalidback:{
-      type:String
-  },
-  location: {
-    type: pointSchema,
-  },
-  current_location: {
-    type: pointSchema,
-  },
-  address: {
-    type: String,
-  },
-  country: {
+    },
+    vehiclenumber: {
+      type: String,
+    },
+    registration: {
+      type: String,
+    },
+    vehicleimg: {
+      type: String
+    },
+    nationalid: {
+      type: String
+    },
+    nationalidfront: {
+      type: String
+    },
+    nationalidback: {
+      type: String
+    },
+    location: {
+      type: pointSchema,
+    },
+    current_location: {
+      type: pointSchema,
+    },
+    address: {
+      type: String,
+    },
+    country: {
     type: String,
   },
   shipping_address: {
-    type: Object,
-  },
-
+      type: Object,
+    },
+    city: {
+      type: String,
+    },
+    state: {
+      type: String,
+    }, 
+    pincode: {
+      type: Number,
+    }
   },
   {
     timestamps: true,
