@@ -97,7 +97,7 @@ module.exports = {
       if (!user) {
         return response.unAuthorize(res, info);
       }
-      
+
       console.log("user=======>>", user);
       let token = await new jwtService().createJwtToken({
         id: user._id,
@@ -624,60 +624,60 @@ module.exports = {
       return response.error(res, err);
     }
   },
-   getVendorsByCategoryAndAttribute : async (req, res) => {
-  try {
-    const { categoryId, attributeName, location } = req.body;
+  getVendorsByCategoryAndAttribute: async (req, res) => {
+    try {
+      const { categoryId, attributeName, location } = req.body;
 
-    const result = await User.aggregate([
-  {
-    $geoNear: {
-      near: { type: "Point", coordinates: location },
-      distanceField: "distance",
-      spherical: true,
-      maxDistance: 1609.34 * 10,
-      query: { type: "VENDOR" },
-    },
-  },
-  {
-    $lookup: {
-      from: "products",
-      let: { vendorId: "$_id" },
-      pipeline: [
+      const result = await User.aggregate([
         {
-          $match: {
-            $expr: { $eq: ["$posted_by", "$$vendorId"] },
-            category: new mongoose.Types.ObjectId(categoryId),
-            attributes: { $elemMatch: { name: attributeName } },
+          $geoNear: {
+            near: { type: "Point", coordinates: location },
+            distanceField: "distance",
+            spherical: true,
+            maxDistance: 1609.34 * 10,
+            query: { type: "VENDOR" },
           },
         },
-      ],
-      as: "products",
-    },
+        {
+          $lookup: {
+            from: "products",
+            let: { vendorId: "$_id" },
+            pipeline: [
+              {
+                $match: {
+                  $expr: { $eq: ["$posted_by", "$$vendorId"] },
+                  category: new mongoose.Types.ObjectId(categoryId),
+                  attributes: { $elemMatch: { name: attributeName } },
+                },
+              },
+            ],
+            as: "products",
+          },
+        },
+        {
+          $match: {
+            products: { $ne: [] },
+          },
+        },
+        {
+          $project: {
+            _id: 1,
+            shop_name: 1,
+            address: 1,
+            type: 1,
+            location: 1,
+            distance: 1,
+            products: 1,
+          },
+        },
+      ]);
+      console.log("result", result)
+      return response.ok(res, result);
+    } catch (err) {
+      console.error(err);
+      res.status(500).json({ success: false, message: err.message });
+    }
   },
-  {
-    $match: {
-      products: { $ne: [] },
-    },
-  },
-  {
-    $project: {
-      _id: 1,
-      shop_name: 1,
-      address:1,
-      type: 1,
-      location: 1,
-      distance: 1,
-      products: 1,
-    },
-  },
-]);
-    console.log("result",result)
-    return response.ok(res, result);
-  } catch (err) {
-    console.error(err);
-    res.status(500).json({ success: false, message: err.message });
-  }
-},
 
   getAllUsers: async (req, res) => {
     try {
@@ -810,6 +810,16 @@ module.exports = {
     } catch (error) {
       return response.error(res, error);
     }
-  }
+  },
+   getVendorById: async (req, res) => {
+    try {
+      let data = await User.findById(req?.params?.id);
+      return response.ok(res, data);
+    } catch (error) {
+      return response.error(res, error);
+    }
+  },
+
 
 };
+

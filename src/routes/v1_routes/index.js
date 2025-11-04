@@ -72,7 +72,7 @@ router.post("/deleteAllCategory", isAuthenticated(["USER", "ADMIN"]), category.d
 
 // router.get("/getProductByVendor", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), product.getProductByVendor);
 // router.post("/createProduct", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), product.createProduct);
-router.get("/getProductByVendor",isAuthenticated(["USER","ADMIN","DRIVER","VENDOR"]),product.getProductByVendor);
+router.get("/getProductByVendor", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), product.getProductByVendor);
 
 router.post(
   "/createProduct",
@@ -89,9 +89,9 @@ router.get(
 router.post("/getProductByVendorandCategory", product.getProductByVendorandCategory);
 router.get("/getProductById/:id", product.getProductById);
 
-router.get("/getProducts",product.getProduct);
-router.post("/updateProduct",upload.any(),product.updateProduct);
-router.delete("/deleteProduct/:id",product.deleteProduct);
+router.get("/getProducts", product.getProduct);
+router.post("/updateProduct", upload.any(), product.updateProduct);
+router.delete("/deleteProduct/:id", product.deleteProduct);
 
 router.post('/updatepassword', isAuthenticated("USER"), user.updatePassword)
 
@@ -139,5 +139,5 @@ router.get("/getordercount", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR
 
 router.get("/getSetting", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), Setting.getSetting);
 router.post("/saveSetting", isAuthenticated(["ADMIN"]), Setting.saveSetting);
-
+router.get("/getVendorById/:id", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), user.getVendorById)
 module.exports = router;
