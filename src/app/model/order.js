@@ -51,6 +51,12 @@ const orderchema = new mongoose.Schema(
         type: mongoose.Schema.Types.ObjectId,
         ref: "User",
     },
+    selectedAtribute:{
+      type:Object
+    },
+    inputvalue:{
+      type:String
+    },
     sheduledate:{
       type:Date
     },
