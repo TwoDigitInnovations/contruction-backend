@@ -83,6 +83,9 @@ module.exports = {
       return response.error(res, error);
     }
   },
+
+
+
   getallorder: async (req, res) => {
     try {
       const product = await Order.find()
