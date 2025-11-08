@@ -4,6 +4,7 @@ const response = require("./../responses");
 const mailNotification = require("../services/mailNotification");
 const { notify } = require("../services/notification");
 const User = mongoose.model("User");
+const Product = mongoose.model("Product");
 
 module.exports = {
   createOrder: async (req, res) => {
@@ -27,14 +28,34 @@ module.exports = {
     let order = new Order(orderData);
     await order.save();
     
-    const u = await User.findByIdAndUpdate(
-      userId,
-      { $set: payload },
-      {
-        new: true,
-        upsert: true,
-      }
-    );
+    const productdata = await Product.findById(payload?.product)
+    if (productdata) {
+  const attributeIndex = productdata.attributes.findIndex(
+    (it) => it.name === payload.selectedAtribute?.name
+  );
+
+  if (attributeIndex !== -1) {
+    // Subtract the input value from the existing value
+    productdata.attributes[attributeIndex].value =
+      Number(productdata.attributes[attributeIndex].value) -
+      Number(payload?.inputvalue);
+
+    await productdata.save();
+  }
+}
+
+  await notify(
+            payload.vendor,
+            "New Order Received",
+            "You have received a new order.",
+            "ordersreceived"
+          );
+        
+        await notify(
+          userId,
+          "Order Placed",
+          "Your order has been placed successfully."
+        );
     
     return response.ok(res, { 
       message: "Order added successfully",
@@ -47,8 +68,8 @@ module.exports = {
 },
   getrequestProductbyuser: async (req, res) => {
     try {
-      const { page = 1, limit = 20 } = req.query;
-      const product = await Order.find({ user: req.user.id })
+      const { page = 1, limit = 20,project } = req.query;
+      const product = await Order.find({ user: req.user.id,project:project })
         .populate("user", "-password")
         .sort({ createdAt: -1 })
         .limit(limit * 1)
@@ -178,6 +199,17 @@ module.exports = {
       product.driver=req.user.id
       // product.status='Driveraccepted'
       product.save();
+      await notify(
+        product.user,
+        "Driver Assigned",
+        "A driver has been assigned for your order."
+      );
+
+      await notify(
+        product.vendor,
+        "Driver Accepted",
+        `The driver has accepted Order ${product.order_id}.`
+      );
       return response.ok(res, product);
     } catch (error) {
       return response.error(res, error);
@@ -188,6 +220,60 @@ module.exports = {
       const product = await Order.findById(req.body.id)
       product.status=req.body.status
       product.save();
+
+      if (req.body.status === "Driverassigned") {
+        let driverlist = await User.find({
+          type: "Driver",
+          location: {
+            $near: {
+              $maxDistance: 1609.34 * 10,
+              $geometry: product.location,
+            },
+          },
+        });
+        {
+          driverlist.length > 0 &&
+            (await notify(
+              driverlist,
+              "New Order Received",
+              "You have received a new order for delivery.",
+              "ordersreceived"
+            ));
+        }
+        await notify(
+          product.vendor,
+          "Driver Assigned",
+          `Order ${product.order_id} has been assigned to a driver.`
+        );
+      }
+      if (req.body.status === "Delivered") {
+        product.deliveredAt = new Date();
+        product.deliverylocation = req.body.deliverylocation;
+        product.deliveryimg = req.body.deliveryimg;
+        await notify(
+          product.user,
+          "Order Delivered",
+          "Your order has been delivered successfully."
+        );
+        await notify(
+          product.vendor,
+          "Order Delivered",
+          `Order ${product.order_id} has been delivered successfully.`
+        );
+      }
+      if (req.body.status === "Collected") {
+        await notify(
+          product.user,
+          "Order Collected",
+          "Your order has been collected by the driver."
+        );
+        await notify(
+          product.vendor,
+          "Order Collected",
+          `Order ${product.order_id} has been collected by the driver.`
+        );
+      }
+
       return response.ok(res, product);
     } catch (error) {
       return response.error(res, error);

@@ -103,11 +103,11 @@ module.exports = {
         id: user._id,
         type: user.type,
       });
-      // await Device.updateOne(
-      //   { device_token: req.body.device_token },
-      //   { $set: { player_id: req.body.player_id, user: user._id } },
-      //   { upsert: true }
-      // );
+      await Device.updateOne(
+        { device_token: req.body.device_token },
+        { $set: { player_id: req.body.player_id, user: user._id } },
+        { upsert: true }
+      );
       const data = {
         token,
         ...user._doc,

@@ -10,6 +10,7 @@ const order = require("../../app/controller/order");
 const inquery = require("../../app/controller/inquery");
 const { upload } = require("../../app/services/fileUpload");
 const Setting = require("../../app/controller/setting");
+const Review = require("../../app/controller/Review");
 // const notification = require("../../app/controller/notification");
 
 
@@ -140,4 +141,8 @@ router.get("/getordercount", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR
 router.get("/getSetting", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), Setting.getSetting);
 router.post("/saveSetting", isAuthenticated(["ADMIN"]), Setting.saveSetting);
 router.get("/getVendorById/:id", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), user.getVendorById)
+
+///////review
+router.post("/addreview", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), Review.addreview)
+router.get("/getReviewByUser", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), Review.getReviewByUser)
 module.exports = router;

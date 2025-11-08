@@ -24,6 +24,10 @@ const orderchema = new mongoose.Schema(
                 type: mongoose.Schema.Types.ObjectId,
                 ref: "Product",
             },
+            project: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Project",
+            },
             productname: {
                 type: String
             },
@@ -31,6 +35,15 @@ const orderchema = new mongoose.Schema(
                 type: String
             },
             price: {
+                type: Number
+            },
+            deliveryfee: {
+                type: Number
+            },
+            tax: {
+                type: Number
+            },
+            expectedtime: {
                 type: Number
             },
             status: {
@@ -59,6 +72,9 @@ const orderchema = new mongoose.Schema(
     },
     sheduledate:{
       type:Date
+    },
+    selectedSlot:{
+      type:String
     },
     location: {
       type: pointSchema,
@@ -93,6 +109,7 @@ const orderchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Pending",
+      // enum:['Pending','Collected','Delivered','Packed','Driverassigned']
     },
   },
   {
