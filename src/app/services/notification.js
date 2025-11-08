@@ -35,13 +35,13 @@ async function sendNotification(content, player_ids, title,notifictone) {
     if (notifictone) {
       notification.ios_sound=`ordersreceived.wav`;
       notification.android_sound='ordersreceived';
-      notification.android_channel_id='b431449d-71ef-4a38-a2a6-fff80f9e32a8'
+      notification.android_channel_id='12231fc9-0051-4da5-a143-af0f1afb70f6'
     } else{
       notification.ios_sound=`drivernotif.wav`;
       notification.android_sound='drivernotif';
-      notification.android_channel_id='13c999e9-f134-4a46-b6e2-87dbe32d8859'
+      notification.android_channel_id='1f916eb4-0392-4d8c-9616-8ac7008a729a'
     }
-    notification.name = "Resaz";
+    notification.name = "Bodmass";
     return await client.createNotification(notification);
   } catch (err) {
     console.log("error in send notification", content);
