@@ -12,6 +12,7 @@ const { upload } = require("../../app/services/fileUpload");
 const Setting = require("../../app/controller/setting");
 const Review = require("../../app/controller/Review");
 const transaction = require("../../app/controller/transaction");
+const invoice = require("../../app/controller/invoice");
 // const notification = require("../../app/controller/notification");
 
 
@@ -159,4 +160,6 @@ router.post("/updateTransaction/:id",isAuthenticated(["USER", "ADMIN", "DRIVER",
 router.get("/getSellerRevenue",isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),transaction.getSellerRevenue);
 router.get("/getPendingTransaction",isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),transaction.getPendingTransaction);
 
+//////Invoice
+router.get('/generateInvoice', invoice.generateInvoice);
 module.exports = router;
