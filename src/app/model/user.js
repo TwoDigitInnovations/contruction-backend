@@ -113,15 +113,25 @@ const userSchema = new mongoose.Schema(
   shipping_address: {
       type: Object,
     },
-    city: {
+    // city: {
+    //   type: String,
+    // },
+    // state: {
+    //   type: String,
+    // }, 
+    // pincode: {
+    //   type: Number,
+    // },
+    wallet: {
+      type: Number,
+      default: 0,
+    },
+    bank_name: {
       type: String,
     },
-    state: {
+    ac_no: {
       type: String,
-    }, 
-    pincode: {
-      type: Number,
-    }
+    },
   },
   {
     timestamps: true,

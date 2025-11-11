@@ -11,6 +11,7 @@ const inquery = require("../../app/controller/inquery");
 const { upload } = require("../../app/services/fileUpload");
 const Setting = require("../../app/controller/setting");
 const Review = require("../../app/controller/Review");
+const transaction = require("../../app/controller/transaction");
 // const notification = require("../../app/controller/notification");
 
 
@@ -130,6 +131,10 @@ router.get("/getrequestProductbyuser", isAuthenticated(["USER", "ADMIN", "DRIVER
 router.get("/getvendororder", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), order.getvendororder);
 router.post("/nearbyorderfordriver", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), order.nearbyorderfordriver);
 router.post("/changeorderstatus", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), order.changeorderstatus);
+router.post("/completeride", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),upload.fields([
+    { name: 'deliveryimg', maxCount: 5 },
+    { name: 'signature', maxCount: 1 },
+  ]), order.completeride);
 router.get("/getOrderById/:id", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), order.getOrderById);
 router.get("/acceptedorderfordriver", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), order.acceptedorderfordriver);
 router.post("/acceptorderdriver/:id", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), order.acceptorderdriver);
@@ -145,4 +150,13 @@ router.get("/getVendorById/:id", isAuthenticated(["USER", "ADMIN", "DRIVER", "VE
 ///////review
 router.post("/addreview", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), Review.addreview)
 router.get("/getReviewByUser", isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]), Review.getReviewByUser)
+
+/////Transaction /////
+router.post("/createTransaction",isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),transaction.createTransaction);
+router.get("/getTransaction",isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),transaction.getTransaction);
+router.get("/getAllTransaction",isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),transaction.getAllTransaction);
+router.post("/updateTransaction/:id",isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),transaction.updateTransaction);
+router.get("/getSellerRevenue",isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),transaction.getSellerRevenue);
+router.get("/getPendingTransaction",isAuthenticated(["USER", "ADMIN", "DRIVER", "VENDOR"]),transaction.getPendingTransaction);
+
 module.exports = router;

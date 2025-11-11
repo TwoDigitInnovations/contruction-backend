@@ -37,6 +37,9 @@ const orderchema = new mongoose.Schema(
             price: {
                 type: Number
             },
+            total: {
+                type: Number
+           },
             deliveryfee: {
                 type: Number
             },
@@ -82,13 +85,16 @@ const orderchema = new mongoose.Schema(
     address: {
       type: String,
     },
+    signatureimg: {
+      type: String,
+    },
+    deliveryimg: {
+      type: Array,
+    },
     orderacceptbyvendor: {
       type: String,
       enum: ["yes","no"],
     },
-    // total: {
-    //     type: Number
-    // },
     // address: {
     //   address: {
     //     type: String,
@@ -109,7 +115,7 @@ const orderchema = new mongoose.Schema(
     status: {
       type: String,
       default: "Pending",
-      // enum:['Pending','Collected','Delivered','Packed','Driverassigned']
+      // enum:['Pending','Collected','Delivered','Packed','Driverassigned','Accepted','Rejected']
     },
   },
   {

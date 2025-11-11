@@ -5,6 +5,8 @@ const mailNotification = require("../services/mailNotification");
 const { notify } = require("../services/notification");
 const User = mongoose.model("User");
 const Product = mongoose.model("Product");
+const Transaction = mongoose.model("Transaction");
+
 
 module.exports = {
   createOrder: async (req, res) => {
@@ -219,7 +221,6 @@ module.exports = {
     try {
       const product = await Order.findById(req.body.id)
       product.status=req.body.status
-      product.save();
 
       if (req.body.status === "Driverassigned") {
         let driverlist = await User.find({
@@ -246,21 +247,7 @@ module.exports = {
           `Order ${product.order_id} has been assigned to a driver.`
         );
       }
-      if (req.body.status === "Delivered") {
-        product.deliveredAt = new Date();
-        product.deliverylocation = req.body.deliverylocation;
-        product.deliveryimg = req.body.deliveryimg;
-        await notify(
-          product.user,
-          "Order Delivered",
-          "Your order has been delivered successfully."
-        );
-        await notify(
-          product.vendor,
-          "Order Delivered",
-          `Order ${product.order_id} has been delivered successfully.`
-        );
-      }
+      
       if (req.body.status === "Collected") {
         await notify(
           product.user,
@@ -273,7 +260,69 @@ module.exports = {
           `Order ${product.order_id} has been collected by the driver.`
         );
       }
+      if (req.body.status === "Accepted") {
+        await notify(
+          product.user,
+          "Order Accepted",
+          "Your order has been accepted by the seller."
+        );
+      }
+      if (req.body.status === "Rejected") {
+        await notify(
+          product.user,
+          "Order Rejected",
+          "Your order has been rejected by the seller."
+        );
+      }
+      product.save();
+      return response.ok(res, product);
+    } catch (error) {
+      return response.error(res, error);
+    }
+  },
+  completeride : async (req, res) => {
+    try {
+      const product = await Order.findById(req.body.id)
+      product.status=req.body.status
 
+
+        await User.findByIdAndUpdate(product.vendor, { $inc: { wallet: Number(product.price) } });
+        await User.findByIdAndUpdate(product.driver, { $inc: { wallet: Number(product.deliveryfee) } });
+
+        product.deliveredAt = new Date();
+        const sellertxn = new Transaction({
+          req_user: product.vendor,
+          amount: product.price,
+          type: "EARN",
+          status: "Approved",
+        });
+        await sellertxn.save();
+        const drivertxn = new Transaction({
+          req_user: product.driver,
+          amount: product.deliveryfee,
+          type: "EARN",
+          status: "Approved",
+        });
+        await drivertxn.save();
+
+        product.deliveredAt = new Date();
+        await notify(
+          product.user,
+          "Order Delivered",
+          `You order ${product?.order_id} has been delivered successfully.`
+        );
+        await notify(
+          product.vendor,
+          "Order Delivered",
+          `Order ${product.order_id} has been delivered successfully.`
+        );
+      if (req.files && req.files?.deliveryimg?.length > 0) {
+        product.deliveryimg = req.files?.deliveryimg?.map((file) => file.location);
+      }
+      if (req.files && req.files?.signature?.length > 0) {
+        product.signatureimg = req.files?.signature?.[0].location
+      }
+      product.save();
       return response.ok(res, product);
     } catch (error) {
       return response.error(res, error);

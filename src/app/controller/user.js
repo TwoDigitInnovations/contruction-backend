@@ -562,20 +562,20 @@ module.exports = {
       await user.save();
       console.log("==>", user._id);
 
-      // if (req.body.verified === "VERIFIED") {
-      //   await notify(
-      //     user._id,
-      //     "Account verified",
-      //     "Your account is now verified"
-      //   );
-      // }
-      // if (req.body.verified === "SUSPEND") {
-      //   await notify(
-      //     user._id,
-      //     "Account suspended",
-      //     "Your account is suspended"
-      //   );
-      // }
+      if (req.body.verified === "VERIFIED") {
+        await notify(
+          user._id,
+          "Account verified",
+          "Your account is now verified"
+        );
+      }
+      if (req.body.verified === "SUSPEND") {
+        await notify(
+          user._id,
+          "Account suspended",
+          "Your account is suspended"
+        );
+      }
 
       return response.ok(res, user);
     } catch (error) {
