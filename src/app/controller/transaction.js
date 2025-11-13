@@ -23,8 +23,14 @@ module.exports = {
       let page = parseInt(req.query.page) || 1;
       let limit = parseInt(req.query.limit) || 10;
       let skip = (page - 1) * limit;
-
-      const reqlist = await Transaction.find({req_user:req.user.id})
+   let cond={req_user:req.user.id};
+      if (req.query.type) {
+        cond.type = req.query.type;
+      }
+      if (req.query.status) {
+        cond.status = req.query.status;
+      }
+      const reqlist = await Transaction.find(cond)
         .sort({ createdAt: -1 })
         .skip(skip)
         .limit(limit);

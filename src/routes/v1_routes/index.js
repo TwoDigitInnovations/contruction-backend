@@ -13,6 +13,7 @@ const Setting = require("../../app/controller/setting");
 const Review = require("../../app/controller/Review");
 const transaction = require("../../app/controller/transaction");
 const invoice = require("../../app/controller/invoice");
+const faq = require("../../app/controller/faq");
 // const notification = require("../../app/controller/notification");
 
 
@@ -162,4 +163,10 @@ router.get("/getPendingTransaction",isAuthenticated(["USER", "ADMIN", "DRIVER", 
 
 //////Invoice
 router.get('/generateInvoice', invoice.generateInvoice);
+
+///// FAQ //////
+router.get("/getfaq", faq.getFAQ);
+router.post("/createfaq",  faq.createFAQ);
+router.post("/updatefaq/:id",  faq.updateFAQ);
+router.delete("/deletefaq/:id", faq.deleteFAQ);
 module.exports = router;
