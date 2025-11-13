@@ -375,6 +375,7 @@ module.exports = {
       if (!track) {
         return response.error(res, "Location not provided");
       }
+      console.log("track", track);
       await User.findByIdAndUpdate(req.user.id, { $set: { current_location: track } });
       return response.ok(res, { message: "Location Update successfully" });
     } catch (error) {

@@ -28,7 +28,7 @@ router.post("/getVendorsByCategoryAndAttribute", user.getVendorsByCategoryAndAtt
 
 router.get("/getAllDriver", user.getAllDriver);
 router.get("/getAllVendor", user.getAllVendor);
-router.get("/driverupdatelocation", isAuthenticated(["DRIVER"]), user.driverupdatelocation);
+router.post("/driverupdatelocation", isAuthenticated(["DRIVER"]), user.driverupdatelocation);
 router.post("/verifyuser/:id", user.verifyuser);
 router.get(
   "/getProfile",
